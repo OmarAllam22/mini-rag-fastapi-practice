@@ -20,4 +20,4 @@ To use it globaly, you can use ngrok which forward your localserver endpoint to 
 ngrok http <your-uvicorn-server-endpoint>
 ```
 
-![alt text](image.png)"
+![alt text](assets/image.png)"
