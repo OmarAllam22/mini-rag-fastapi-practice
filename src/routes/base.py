@@ -9,7 +9,7 @@ base_router = APIRouter(
 )
 
 @base_router.get("/")
-def welcome():
+async def welcome():
     return {
         "message" : "Hello World",
         "app_name" : app_name,
