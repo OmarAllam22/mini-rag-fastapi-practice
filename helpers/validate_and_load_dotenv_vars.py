@@ -1,7 +1,11 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 from pydantic import Field , FilePath, field_validator
 from dotenv import load_dotenv
-import os, mimetypes
+import os, sys, mimetypes
+parent_dir_path = os.path.dirname(os.path.dirname(__file__)) 
+sys.path.append(parent_dir_path) if parent_dir_path not in sys.path else None
+
+from enums.constants import Constants
 
 # to strict the one whoe defines the .env to set valid MIME types
 VALID_MIME_TYPES = mimetypes.types_map
@@ -27,7 +31,7 @@ class AppConfig(BaseSettings):
     def validate_mime_types_set(cls, dotenv_mimi_values:list[str]):   # important note here to use the cls not the self (because validation is run before the instance is created so we cannot use self)
         for value in dotenv_mimi_values:
             if value not in VALID_MIME_TYPES.values():
-                raise ValueError(f"Iinvalid MIME types:{value}, Allowed types are: {VALID_MIME_TYPES}")
+                raise ValueError(Constants.InvalidMimeType.value.format(value, VALID_MIME_TYPES))
         return dotenv_mimi_values
     
     MAX_FILE_SIZE: int = Field(default=10, description="value here is in MegaBytes")
