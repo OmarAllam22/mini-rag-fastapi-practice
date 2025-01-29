@@ -1,3 +1,7 @@
+from enums.constants import Constants
+import sys
+sys.path.append(Constants.LandingDirectory.value) if Constants.LandingDirectory.value not in sys.path else None
+
 from fastapi import FastAPI
 
 # Note: .env must be loaded before importing the base_router in which variables will be used

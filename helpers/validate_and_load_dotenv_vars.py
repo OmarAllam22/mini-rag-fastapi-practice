@@ -1,22 +1,32 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 from pydantic import Field , FilePath, field_validator
-from dotenv import load_dotenv
-import os, sys, mimetypes
-parent_dir_path = os.path.dirname(os.path.dirname(__file__)) 
-sys.path.append(parent_dir_path) if parent_dir_path not in sys.path else None
+from dotenv import dotenv_values, load_dotenv
+import os, mimetypes
+from enums.constants import Constants   # this relative import is handled in main.py after adding this LandingDirectory to sys.path
 
-from enums.constants import Constants
+LANDING_DIRECTORY = Constants.LandingDirectory.value 
 
 # to strict the one whoe defines the .env to set valid MIME types
 VALID_MIME_TYPES = mimetypes.types_map
 
 class AppConfig(BaseSettings):
     
-    dotenv_file : FilePath = os.path.join(os.path.dirname(os.path.dirname(__file__)),".env") 
-    
+    dotenv_path : FilePath = os.path.join(LANDING_DIRECTORY,".env") 
+
+    # this is to load the environment variables in the python session.
+    def __init__(self, **data):
+        super().__init__(**data)  # must call the super class here & must pass the **data (which are the class defined variables) as the same in case of using @dataclass
+        env_dict = dotenv_values(self.dotenv_path)
+        env_dict['LANDING_DIRECTORY'] = LANDING_DIRECTORY
+        with open(".env", 'w') as env_file:
+            for key, value in env_dict.items():
+                env_file.write(f"{key} = {value}\n")
+        load_dotenv(self.dotenv_path)
+
+
     # model_config is a reserved name that must be overwritten
     model_config = SettingsConfigDict(
-        env_file = dotenv_file,
+        env_file = dotenv_path,
         case_sensitive=True, # to make the reading from .env case-sensitive to env variables defined below
         extra="forbid"       # not to allow for extra env variables in the .env than those defined below
     )
@@ -36,10 +46,12 @@ class AppConfig(BaseSettings):
     
     MAX_FILE_SIZE: int = Field(default=10, description="value here is in MegaBytes")
 
-    # this is to load the environment variables in the python session.
-    def __init__(self, **data):
-        super().__init__(**data)  # must call the super class here & must pass the **data (which are the class defined variables) as the same in case of using @dataclass
-        load_dotenv(self.dotenv_file)
+    LANDING_DIRECTORY: str = Field(description="Absolute path for the main directory of the project. Is automatically set.")
+    @field_validator('LANDING_DIRECTORY')
+    def validate_dir_existence(cls, path : str):
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"This path: {path} in your .env LANDING_DIRECTORY doesn't exist.")
+        return path
 
     # redundant method as it returns the instance itself.
     def get_settings(self):
