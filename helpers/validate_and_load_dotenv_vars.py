@@ -24,9 +24,12 @@ class AppConfig(BaseSettings):
                 env_file.write(f"{key} = {value}\n")
         load_dotenv(self.dotenv_path)
 
-        logging.basicConfig(filename=os.path.join('app.log'),
-                                    filemode='a', 
-                                    format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.basicConfig(
+            filename=os.path.join('app.log'),
+            level=logging.INFO,
+            filemode='a', 
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
         AppConfig.logger = logging
 
 

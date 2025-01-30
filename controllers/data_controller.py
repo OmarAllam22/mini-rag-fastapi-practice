@@ -38,7 +38,7 @@ class DataController(BaseController):
         else:
             write_signal = await ProjectController().write_uploaded_file_and_return_signal(file ,self.project_id) # write the uploaded file in the folders directory
             signal = Constants.SuccessUploadResponse.value.format(file.filename) if not write_signal else write_signal
-            self.app_settings.logger.info(signal)
+            self.app_settings.logger.info(signal) if not write_signal else None  # as write_signal is already logged in project_controller.py as error when there was an exception. 
             return {
                     "valid": True,
                     "signal" : signal
