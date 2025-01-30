@@ -21,7 +21,7 @@ class ProjectController(BaseController):
             base_path, extension = os.path.splitext(file_path)
             file_path = f"{base_path}_{idx}{extension}"
         try:
-            async with aiofiles.open(file_path,'wb', encoding='utf-8') as f:
+            async with aiofiles.open(file_path,'wb') as f:
                 while chunk := await file.read(int(self.app_settings.FILE_MAX_CHUNK_SIZE * 1024 * 1024)):
                     await f.write(chunk)
         except Exception as e:
