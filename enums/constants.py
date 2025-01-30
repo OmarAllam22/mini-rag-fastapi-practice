@@ -9,3 +9,5 @@ class Constants(Enum):
     InvalidFileTypeResponse = "This file type {} is not supported. Here are the supported file types {}" # used in controllers.data_controller.py
     InvalidFileSizeResponse = "uploaded file of {} bytes larger than the maximum allowed size: {} Mega bytes" # used in controllers.data_controller.py
     SuccessUploadResponse = "File named {} is uploaded correctly" # used in controllers.data_controller.py
+
+    InternalError =  "Your request wasn't executed because there is an internal error. Call the company for more details"

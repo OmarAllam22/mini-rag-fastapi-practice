@@ -1,8 +1,9 @@
 from pydantic_settings import BaseSettings,SettingsConfigDict
 from pydantic import Field , FilePath, field_validator
 from dotenv import dotenv_values, load_dotenv
-import os, mimetypes
+import os, mimetypes, logging
 from enums.constants import Constants   # this relative import is handled in main.py after adding this LandingDirectory to sys.path
+
 
 LANDING_DIRECTORY = Constants.LandingDirectory.value 
 
@@ -22,6 +23,11 @@ class AppConfig(BaseSettings):
             for key, value in env_dict.items():
                 env_file.write(f"{key} = {value}\n")
         load_dotenv(self.dotenv_path)
+
+        logging.basicConfig(filename=os.path.join('app.log'),
+                                    filemode='a', 
+                                    format='%(asctime)s - %(levelname)s - %(message)s')
+        AppConfig.logger = logging
 
 
     # model_config is a reserved name that must be overwritten
@@ -45,6 +51,7 @@ class AppConfig(BaseSettings):
         return dotenv_mimi_values
     
     MAX_FILE_SIZE: int = Field(default=10, description="value here is in MegaBytes")
+    FILE_MAX_CHUNK_SIZE: float = Field(default=.512, description="value here is in MegaBytes")
 
     LANDING_DIRECTORY: str = Field(description="Absolute path for the main directory of the project. Is automatically set.")
     @field_validator('LANDING_DIRECTORY')
