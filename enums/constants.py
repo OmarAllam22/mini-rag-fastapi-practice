@@ -11,3 +11,5 @@ class Constants(Enum):
     SuccessUploadResponse = "File named {} is uploaded correctly" # used in controllers.data_controller.py
 
     InternalError =  "Your request wasn't executed because there is an internal error. Call the company for more details"
+
+    EmptyDocumentResponse = "Your Document {} has no text. Or cannot be processed. Try another request options (ex: chunk overlap shouldn't be greater than chunk size)" 
