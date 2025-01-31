@@ -46,3 +46,7 @@ async def process_file(project_id: int, process_request_schema: FileProcessReque
             status_code = status.HTTP_400_BAD_REQUEST,
             content = { "msg": data_controller_obj.file_empty_msg_or_cannot_parsed_msg}
         )
+
+#we still have two problems: 
+#1. handling _1_1_1_ in file names 
+#2. returning the whole document not JSONResponse (when we made the content there, we GOT CANNOT SERIALIZED)
