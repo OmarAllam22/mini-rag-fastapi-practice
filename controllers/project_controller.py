@@ -13,7 +13,7 @@ class ProjectController(BaseController):
             os.mkdir(project_path)
         return project_path
 
-    async def write_uploaded_file_and_return_signal(self, file: UploadFile, project_id: int) -> None | str:
+    async def write_uploaded_file_and_return_signal(self, file: UploadFile, project_id: int) -> tuple[None|str, str]:
         project_path = self.get_project_path(project_id)
         file_path = os.path.join(project_path, file.filename)
         idx = 1
@@ -24,7 +24,8 @@ class ProjectController(BaseController):
             async with aiofiles.open(file_path,'wb') as f:
                 while chunk := await file.read(int(self.app_settings.FILE_MAX_CHUNK_SIZE * 1024 * 1024)):
                     await f.write(chunk)
+            return None, file_path
         except Exception as e:
             self.app_settings.logger.error(f"Error while writing file {file.filename} as {e}")
-            return Constants.InternalError.value
+            return Constants.InternalError.value, file_path
 

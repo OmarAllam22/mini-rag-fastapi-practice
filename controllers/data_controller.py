@@ -2,6 +2,7 @@ from controllers.base_controller import BaseController
 from controllers.project_controller import ProjectController
 from enums.constants import Constants
 from fastapi import UploadFile
+import os
 
 class DataController(BaseController):
     def __init__(self, project_id: int):
@@ -36,11 +37,12 @@ class DataController(BaseController):
                     "signal" : signal
                 }            
         else:
-            write_signal = await ProjectController().write_uploaded_file_and_return_signal(file ,self.project_id) # write the uploaded file in the folders directory
+            write_signal, written_file_path = await ProjectController().write_uploaded_file_and_return_signal(file ,self.project_id) # write the uploaded file in the folders directory
             signal = Constants.SuccessUploadResponse.value.format(file.filename) if not write_signal else write_signal
             self.app_settings.logger.info(signal) if not write_signal else None  # as write_signal is already logged in project_controller.py as error when there was an exception. 
             return {
                     "valid": True,
+                    "written_file_name" : os.path.split(written_file_path)[-1], # in order not to show the whole path to the user
                     "signal" : signal
                 }
             
