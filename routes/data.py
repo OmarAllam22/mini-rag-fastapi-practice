@@ -36,11 +36,10 @@ async def process_file(project_id: int, process_request_schema: FileProcessReque
     data_controller_obj = DataController(project_id = project_id)
     content = data_controller_obj.process_single_file(process_request_schema = process_request_schema)
     if content:
-        return content
-#        return JSONResponse(
-#            status_code= status.HTTP_200_OK,
-#            content = {"file_content" : content}
-#        )
+        return JSONResponse(
+            status_code= status.HTTP_200_OK,
+            content = {"file_content" : content}
+        )
     else:
         return JSONResponse(
             status_code = status.HTTP_400_BAD_REQUEST,

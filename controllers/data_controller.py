@@ -98,8 +98,18 @@ class DataController(BaseController):
         if os.path.exists(written_file_path):
             docs = self.load_documents(written_file_path) 
             doc_chunks = self.split_documents_and_get_chunks_for_each_doc(docs, process_request_schema) 
-            response_list = doc_chunks if doc_chunks else self.file_empty_msg_or_cannot_parsed_msg
-            return response_list
+            if doc_chunks:
+                self. doc_chunks = [
+                    {
+                        "id": doc.id if doc.id is not None else i,
+                        "page_content": doc.page_content,
+                        "metadata": doc.metadata,
+                        "type": doc.type
+                    } for i, doc in enumerate(doc_chunks)
+                ]
+                return self.doc_chunks
+            else:
+                return self.file_empty_msg_or_cannot_parsed_msg
         else:
             self.app_settings.logger.info(self.file_empty_msg_or_cannot_parsed_msg)
             return None
