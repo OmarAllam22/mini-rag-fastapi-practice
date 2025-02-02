@@ -6,4 +6,3 @@ class BaseController:
     def __init__(self):
         self.app_settings = AppConfig() # contains all the .env variables in addition to get_settings() method
         
-

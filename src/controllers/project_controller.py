@@ -21,12 +21,12 @@ class ProjectController(BaseController):
         try:
             while os.path.exists(file_path):
                 matched_idx_list = re.findall(r'(_\d+)(?=\.\w+$)', file_path)
-                idx = matched_idx_list[0][-1] if matched_idx_list else idx
+                idx = int(matched_idx_list[0][-1] if matched_idx_list else idx)
                 file_path_with_idx_truncated = re.sub(r'(_\d+)(?=\.\w+$)', '', file_path)
                 base_path, extension = os.path.splitext(file_path_with_idx_truncated)
-                file_path = f"{base_path}_{idx}{extension}"
+                file_path = f"{base_path}_{idx+1}{extension}"
+
         except Exception as e:
-            self.app_settings.logger.error(e, base_path, file_path_with_idx_truncated)
             return Constants.InternalError.value, file_path
         
         try:

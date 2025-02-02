@@ -13,3 +13,4 @@ class Constants(Enum):
     InternalError =  "Your request wasn't executed because there is an internal error. Call the company for more details"
 
     EmptyDocumentResponse = "Your Document {} has no text. Or cannot be processed. Try another request options (ex: chunk overlap shouldn't be greater than chunk size)" 
+    
